@@ -23,7 +23,7 @@ def init_network3d(B, d, M, C):
 def grad_cross_entropy(Yk2, Yk, B): # Yk2 => (C * B), Yk => (C * B)
 	batch_cross = Yk2 - Yk
 	# batch_cross = np.sum(batch_cross, axis=1)
-	return batch_cross / B
+	return batch_cross
 
 def grad_fully_layer(W, X, dEn_dY):
 	grad = {}
@@ -40,13 +40,13 @@ def grad_fully_layer(W, X, dEn_dY):
 	return grad
 
 def grad_sigmoid(B, M, Y, dEn_dY):
-	I = np.full((M, B), 1)
-	return dEn_dY * (I - Y) * Y
+	# I = np.full((M, B), 1)
+	return dEn_dY * (1 - Y) * Y
 
 
 if __name__ == "__main__":
 
-	epoch = 60
+	epoch = 100
 
 	(x_train, t_train), (x_test, t_test) = load_mnist(flatten=True, normalize=False, one_hot_label=True)
 	
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	# バッチサイズ
 	B = 100
 	# 学習率
-	eta = 0.01
+	eta = 0.0001
 
 	# ネットワーク初期化
 	network = init_network3d(100, 784, 20, 10)
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 	W2 = network["W2"]
 	b2 = np.array([network["b2"]]).T
 	
-	for i in range(0, 6000):
+	for j in range(0, 1000):
 
 		# 入力層の出力
 		choice = np.random.choice(range(0, 59999), B)
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 		dEn_dX2 = grad2["X"]	# (20, 100)
 
 		# シグモイドの偏微分の計算
-		dEn_dxs = grad_sigmoid(B, M, x1, dEn_dX2)	# (20, 100)
+		dEn_dxs = grad_sigmoid(B, M, y1, dEn_dX2)	# (20, 100)
 
 		# 中間層の偏微分の計算
 		grad1 = grad_fully_layer(W1, y0, dEn_dxs)
@@ -124,5 +124,6 @@ if __name__ == "__main__":
 		W2 = W2 - eta * dEn_dW2
 		b2 = b2 - eta * dEn_db2
 		# print("end")
-		if i % epoch == 0:
-			print(cross_entropy_sum / B)
+		if j % 100 == 0:
+			print(cross_entropy_sum)
+			print(dEn_dW2[0])
