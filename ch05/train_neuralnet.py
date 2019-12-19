@@ -11,10 +11,10 @@ from two_layer_net import TwoLayerNet
 
 network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
 
-iters_num = 10000
+iters_num = 50000
 train_size = x_train.shape[0]
 batch_size = 100
-learning_rate = 0.1
+learning_rate = 0.01
 
 train_loss_list = []
 train_acc_list = []
