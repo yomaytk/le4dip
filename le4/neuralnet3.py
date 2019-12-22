@@ -23,7 +23,7 @@ def init_network3d(B, d, M, C):
 def grad_cross_entropy(Yk2, Yk, B): # Yk2 => (C * B), Yk => (C * B)
 	batch_cross = Yk2 - Yk
 	# batch_cross = np.sum(batch_cross, axis=1)
-	return batch_cross
+	return batch_cross / B
 
 def grad_fully_layer(W, X, dEn_dY):
 	grad = {}
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	# バッチサイズ
 	B = 100
 	# 学習率
-	eta = 0.0001
+	eta = 0.1
 
 	# ネットワーク初期化
 	network = init_network3d(100, 784, 20, 10)
